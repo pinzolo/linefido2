@@ -1,6 +1,9 @@
 package linefido2
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 // ServerError contains error information raised by the FIDO2 server.
 type ServerError struct {
@@ -230,4 +233,65 @@ type VerifyCredentialResult struct {
 	UserId       string `json:"userId"`
 	UserVerified bool   `json:"userVerified"`
 	UserPresent  bool   `json:"userPresent"`
+}
+
+type UserKey struct {
+	RpId            string                   `json:"rpId"`
+	Id              string                   `json:"id"`
+	Name            string                   `json:"name"`
+	Icon            string                   `json:"icon"`
+	DisplayName     string                   `json:"displayName"`
+	Aaguid          string                   `json:"aaguid"`
+	CredentialId    string                   `json:"credentialId"`
+	PublicKey       string                   `json:"publicKey"`
+	Algorithm       string                   `json:"algorithm"`
+	SignCounter     int64                    `json:"signCounter"`
+	AttestationType AttestationType          `json:"attestationType"`
+	Transports      []AuthenticatorTransport `json:"transports"`
+	Rk              *bool                    `json:"rk"`
+	CredProtect     *int32                   `json:"credProtect"`
+	RegisteredAt    time.Time                `json:"registeredAt"`
+	AuthenticatedAt time.Time                `json:"authenticatedAt"`
+}
+
+type CredentialResponse struct {
+	ServerResponse *ServerResponse `json:"serverResponse,omitempty"`
+	Credential     *UserKey        `json:"credential"`
+}
+
+func (res *CredentialResponse) hasError() bool {
+	return res.ServerResponse.hasError()
+}
+
+func (res *CredentialResponse) publish() (*UserKey, error) {
+	if res.hasError() {
+		return nil, ServerError{ServerResponse: res.ServerResponse}
+	}
+
+	return res.Credential, nil
+}
+
+type CredentialsResponse struct {
+	ServerResponse *ServerResponse `json:"serverResponse,omitempty"`
+	Credentials    []*UserKey      `json:"credentials"`
+}
+
+func (res *CredentialsResponse) hasError() bool {
+	return res.ServerResponse.hasError()
+}
+
+func (res *CredentialsResponse) publish() ([]*UserKey, error) {
+	if res.hasError() {
+		return nil, ServerError{ServerResponse: res.ServerResponse}
+	}
+
+	return res.Credentials, nil
+}
+
+type BaseResponse struct {
+	ServerResponse *ServerResponse `json:"serverResponse"`
+}
+
+func (res BaseResponse) hasError() bool {
+	return res.ServerResponse.hasError()
 }
