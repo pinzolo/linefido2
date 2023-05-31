@@ -66,4 +66,4 @@ CREATE TABLE IF NOT EXISTS `metadata_yubico` (
 ) ENGINE=InnoDB;
 
 -- test rp
-insert into `rp` (`id`, `name`, `description`) values('localhost', 'example1', 'example1');
+INSERT INTO `rp` (`id`, `name`, `description`) VALUES ('localhost', 'example1', 'example1');
