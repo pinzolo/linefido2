@@ -10,7 +10,10 @@ import (
 	"net/url"
 )
 
-const defaultBaseUrl = "http://localhost:8081"
+const (
+	defaultBaseUrl = "http://localhost:8081"
+	defaultRpId    = "localhost"
+)
 
 // Client is an interface for calling APIs of FIDO2 server.
 type Client interface {
@@ -23,13 +26,13 @@ type Client interface {
 	// VerifyCredential calls Send Auth Response API.
 	VerifyCredential(ctx context.Context, req *VerifyCredentialRequest) (*VerifyCredentialResult, error)
 	// GetCredentialById calls Get Credential by CredentialId API.
-	GetCredentialById(ctx context.Context, credentialId, rpId string) (*UserKey, error)
+	GetCredentialById(ctx context.Context, credentialId string) (*UserKey, error)
 	// GetCredentialsByUserId calls Get Credential by UserId API.
-	GetCredentialsByUserId(ctx context.Context, rpId, userId string) ([]*UserKey, error)
+	GetCredentialsByUserId(ctx context.Context, userId string) ([]*UserKey, error)
 	// DeleteCredentialById calls Delete Credential by CredentialId API.
-	DeleteCredentialById(ctx context.Context, credentialId, rpId string) error
+	DeleteCredentialById(ctx context.Context, credentialId string) error
 	// DeleteCredentialsByUserId calls Delete Credential by UserId API.
-	DeleteCredentialsByUserId(ctx context.Context, rpId, userId string) error
+	DeleteCredentialsByUserId(ctx context.Context, userId string) error
 	// CheckHealth calls Get Health Check Status.
 	CheckHealth(ctx context.Context) error
 }
@@ -67,6 +70,7 @@ type client struct {
 	client  *http.Client
 	baseUrl string
 	urls    apiUrls
+	rpId    string
 }
 
 // NewClient creates new Client instance.
@@ -84,6 +88,10 @@ func NewClient(opts ...ClientOption) Client {
 	if c.baseUrl == "" {
 		c.baseUrl = defaultBaseUrl
 		c.urls = newApiUrls(defaultBaseUrl)
+	}
+
+	if c.rpId == "" {
+		c.rpId = defaultRpId
 	}
 
 	return c
@@ -106,6 +114,14 @@ func WithBaseUrl(baseUrl string) ClientOption {
 		cl := c.(*client)
 		cl.baseUrl = baseUrl
 		cl.urls = newApiUrls(baseUrl)
+	}
+}
+
+// WithRpId returns ClientOption for setting other RP ID to Client.
+func WithRpId(rpId string) ClientOption {
+	return func(c Client) {
+		cl := c.(*client)
+		cl.rpId = rpId
 	}
 }
 
@@ -189,10 +205,10 @@ func (c *client) VerifyCredential(ctx context.Context, req *VerifyCredentialRequ
 	return res.publish()
 }
 
-func (c *client) GetCredentialById(ctx context.Context, credentialId, rpId string) (*UserKey, error) {
+func (c *client) GetCredentialById(ctx context.Context, credentialId string) (*UserKey, error) {
 	apiUrl := mustApiUri(c.urls.credentialsBase, credentialId)
 	body, err := c.doGet(ctx, apiUrl, map[string]string{
-		"rpId": rpId,
+		"rpId": c.rpId,
 	})
 	if err != nil {
 		return nil, wrapErr(err)
@@ -207,9 +223,9 @@ func (c *client) GetCredentialById(ctx context.Context, credentialId, rpId strin
 	return res.publish()
 }
 
-func (c *client) GetCredentialsByUserId(ctx context.Context, rpId, userId string) ([]*UserKey, error) {
+func (c *client) GetCredentialsByUserId(ctx context.Context, userId string) ([]*UserKey, error) {
 	body, err := c.doGet(ctx, c.urls.credentialsBase, map[string]string{
-		"rpId":   rpId,
+		"rpId":   c.rpId,
 		"userId": userId,
 	})
 	if err != nil {
@@ -225,10 +241,10 @@ func (c *client) GetCredentialsByUserId(ctx context.Context, rpId, userId string
 	return res.publish()
 }
 
-func (c *client) DeleteCredentialById(ctx context.Context, credentialId, rpId string) error {
+func (c *client) DeleteCredentialById(ctx context.Context, credentialId string) error {
 	apiUrl := mustApiUri(c.urls.credentialsBase, credentialId)
 	_, err := c.doDelete(ctx, apiUrl, map[string]string{
-		"rpId": rpId,
+		"rpId": c.rpId,
 	})
 	if err != nil {
 		return wrapErr(err)
@@ -237,9 +253,9 @@ func (c *client) DeleteCredentialById(ctx context.Context, credentialId, rpId st
 	return nil
 }
 
-func (c *client) DeleteCredentialsByUserId(ctx context.Context, rpId, userId string) error {
+func (c *client) DeleteCredentialsByUserId(ctx context.Context, userId string) error {
 	_, err := c.doDelete(ctx, c.urls.credentialsBase, map[string]string{
-		"rpId":   rpId,
+		"rpId":   c.rpId,
 		"userId": userId,
 	})
 	if err != nil {
