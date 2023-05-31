@@ -1,0 +1,12 @@
+{
+  "serverResponse" : {
+    "description" : null,
+    "internalError" : "SUCCESS",
+    "internalErrorCode" : 0,
+    "internalErrorCodeDescription" : null
+  },
+  "aaguid" : "adce0002-35bc-c60a-648b-0b25f1f05503",
+  "userId" : "65fUCTlqPlOSk22tkrkJ2m8I2MEhpF4fCI_pdosMAzk",
+  "userVerified" : true,
+  "userPresent" : true
+}

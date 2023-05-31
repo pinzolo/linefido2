@@ -1,0 +1,8 @@
+{
+  "serverResponse": {
+    "description": "Internal Server Error",
+    "internalError": "INTERNAL_SERVER_ERROR",
+    "internalErrorCode": 999,
+    "internalErrorCodeDescription": null
+  },
+}

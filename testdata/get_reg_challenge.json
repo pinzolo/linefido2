@@ -1,0 +1,78 @@
+{
+  "serverResponse": {
+    "description": null,
+    "internalError": "SUCCESS",
+    "internalErrorCode": 0,
+    "internalErrorCodeDescription": null
+  },
+  "rp": {
+    "name": "example1",
+    "icon": null,
+    "id": "localhost"
+  },
+  "user": {
+    "name": "TestUser",
+    "icon": null,
+    "id": "65fUCTlqPlOSk22tkrkJ2m8I2MEhpF4fCI_pdosMAzk",
+    "displayName": "Test Display Name"
+  },
+  "challenge": "TXgZfiz2B88oNbksOpC4GjNQ8YNaFzntXMBTMdN3K1XgIgKRr3FoXltAhV1zNmmdF4WJhxnoQDeq4s0bARhtRg",
+  "pubKeyCredParams": [
+    {
+      "type": "public-key",
+      "alg": -65535
+    },
+    {
+      "type": "public-key",
+      "alg": -257
+    },
+    {
+      "type": "public-key",
+      "alg": -258
+    },
+    {
+      "type": "public-key",
+      "alg": -259
+    },
+    {
+      "type": "public-key",
+      "alg": -37
+    },
+    {
+      "type": "public-key",
+      "alg": -38
+    },
+    {
+      "type": "public-key",
+      "alg": -39
+    },
+    {
+      "type": "public-key",
+      "alg": -7
+    },
+    {
+      "type": "public-key",
+      "alg": -35
+    },
+    {
+      "type": "public-key",
+      "alg": -36
+    },
+    {
+      "type": "public-key",
+      "alg": -8
+    }
+  ],
+  "timeout": 180000,
+  "excludeCredentials": [],
+  "authenticatorSelection": {
+    "authenticatorAttachment": "platform",
+    "requireResidentKey": true,
+    "userVerification": "preferred"
+  },
+  "attestation": "none",
+  "sessionId": "8bfc693e-8582-45e1-ad08-e2b71901cc97",
+  "extensions": {
+    "credProps": true
+  }
+}

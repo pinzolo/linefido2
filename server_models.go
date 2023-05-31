@@ -48,7 +48,7 @@ type RegistrationOptionsResponse struct {
 	Timeout                uint64                                `json:"timeout,omitempty"`
 	ExcludeCredentials     []PublicKeyCredentialDescriptor       `json:"excludeCredentials,omitempty"`
 	AuthenticatorSelection *AuthenticatorSelectionCriteria       `json:"authenticatorSelection,omitempty"`
-	Attestation            *AttestationConveyancePreference      `json:"attestation,omitempty"`
+	Attestation            AttestationConveyancePreference       `json:"attestation,omitempty"`
 	SessionId              string                                `json:"sessionId,omitempty"`
 	Extensions             *AuthenticationExtensionsClientInputs `json:"extensions,omitempty"`
 }
@@ -138,7 +138,7 @@ type RegisterCredentialResultResponse struct {
 	CredentialId            string                   `json:"credentialId,omitempty"`
 	AuthenticatorAttachment AuthenticatorAttachment  `json:"authenticatorAttachment,omitempty"`
 	AttestationType         AttestationType          `json:"attestationType,omitempty"`
-	AuthenticatorTransports []AuthenticatorTransport `json:"authenticatorTransport,omitempty"`
+	AuthenticatorTransports []AuthenticatorTransport `json:"authenticatorTransports,omitempty"`
 	UserVerified            bool                     `json:"userVerified,omitempty"`
 	Rk                      bool                     `json:"rk,omitempty"`
 	CredProtect             int                      `json:"credProtect,omitempty"`
@@ -170,7 +170,7 @@ type RegisterCredentialResult struct {
 	CredentialId            string                   `json:"credentialId,omitempty"`
 	AuthenticatorAttachment AuthenticatorAttachment  `json:"authenticatorAttachment,omitempty"`
 	AttestationType         AttestationType          `json:"attestationType,omitempty"`
-	AuthenticatorTransports []AuthenticatorTransport `json:"authenticatorTransport,omitempty"`
+	AuthenticatorTransports []AuthenticatorTransport `json:"authenticatorTransports,omitempty"`
 	UserVerified            bool                     `json:"userVerified,omitempty"`
 	Rk                      bool                     `json:"rk,omitempty"`
 	CredProtect             int                      `json:"credProtect,omitempty"`
@@ -205,7 +205,7 @@ type AuthenticationPublicKeyCredential struct {
 // VerifyCredentialResultResponse represents the response of Send Auth Response API.
 type VerifyCredentialResultResponse struct {
 	ServerResponse *ServerResponse `json:"serverResponse,omitempty"`
-	Aaguid         string          `json:"aaguid;"`
+	Aaguid         string          `json:"aaguid"`
 	UserId         string          `json:"userId"`
 	UserVerified   bool            `json:"userVerified"`
 	UserPresent    bool            `json:"userPresent"`
@@ -229,7 +229,7 @@ func (res *VerifyCredentialResultResponse) publish() (*VerifyCredentialResult, e
 }
 
 type VerifyCredentialResult struct {
-	Aaguid       string `json:"aaguid;"`
+	Aaguid       string `json:"aaguid"`
 	UserId       string `json:"userId"`
 	UserVerified bool   `json:"userVerified"`
 	UserPresent  bool   `json:"userPresent"`

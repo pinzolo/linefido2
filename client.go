@@ -266,10 +266,16 @@ func (c *client) DeleteCredentialsByUserId(ctx context.Context, userId string) e
 }
 
 func (c *client) CheckHealth(ctx context.Context) error {
-	_, err := c.doGet(ctx, c.urls.checkHealth, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.urls.checkHealth, nil)
 	if err != nil {
 		return wrapErr(err)
 	}
+
+	res, err := c.client.Do(req)
+	if err != nil {
+		return wrapErr(err)
+	}
+	defer res.Body.Close()
 
 	return nil
 }

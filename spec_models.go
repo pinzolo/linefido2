@@ -46,7 +46,7 @@ type RegistrationOptions struct {
 	Timeout                uint64                                `json:"timeout,omitempty"`
 	ExcludeCredentials     []PublicKeyCredentialDescriptor       `json:"excludeCredentials,omitempty"`
 	AuthenticatorSelection *AuthenticatorSelectionCriteria       `json:"authenticatorSelection,omitempty"`
-	Attestation            *AttestationConveyancePreference      `json:"attestation,omitempty"`
+	Attestation            AttestationConveyancePreference       `json:"attestation,omitempty"`
 	SessionId              string                                `json:"sessionId,omitempty"`
 	Extensions             *AuthenticationExtensionsClientInputs `json:"extensions,omitempty"`
 }
