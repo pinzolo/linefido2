@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -22,6 +23,8 @@ type Client interface {
 	GetAuthenticationOptions(ctx context.Context, req *AuthenticationOptionsRequest) (*AuthenticationOptions, error)
 	// VerifyCredential calls Send Auth Response API.
 	VerifyCredential(ctx context.Context, req *VerifyCredentialRequest) (*VerifyCredentialResult, error)
+	// CheckHealth calls Get Health Check Status.
+	CheckHealth(ctx context.Context) error
 }
 
 type apiUrls struct {
@@ -29,6 +32,7 @@ type apiUrls struct {
 	registerCredential    string
 	authenticationOptions string
 	verifyCredential      string
+	checkHealth           string
 }
 
 func newApiUrls(baseUrl string) apiUrls {
@@ -37,6 +41,7 @@ func newApiUrls(baseUrl string) apiUrls {
 		registerCredential:    mustApiUri(baseUrl, "fido2/reg/response"),
 		authenticationOptions: mustApiUri(baseUrl, "fido2/auth/challenge"),
 		verifyCredential:      mustApiUri(baseUrl, "fido2/auth/response"),
+		checkHealth:           mustApiUri(baseUrl, "health"),
 	}
 }
 
@@ -173,6 +178,30 @@ func (c *client) VerifyCredential(ctx context.Context, req *VerifyCredentialRequ
 	}
 
 	return res.publish()
+}
+
+func (c *client) CheckHealth(ctx context.Context) error {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.urls.checkHealth, nil)
+	if err != nil {
+		return wrapErr(err)
+	}
+
+	res, err := c.client.Do(req)
+	if err != nil {
+		return wrapErr(err)
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		body, err := io.ReadAll(res.Body)
+		if err != nil {
+			return wrapErr(err)
+		}
+
+		return wrapErr(errors.New(string(body)))
+	}
+
+	return nil
 }
 
 func (c *client) postJSON(ctx context.Context, url string, payload []byte) ([]byte, error) {
